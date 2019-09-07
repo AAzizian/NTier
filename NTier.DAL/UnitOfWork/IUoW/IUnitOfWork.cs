@@ -1,0 +1,49 @@
+﻿using NTier.DAL.Models.Account;
+using NTier.DAL.Models.Authentication;
+using NTier.DAL.Models.Global;
+using NTier.DAL.Repositories.IRepositories;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace NTier.DAL.UnitOfWork.IUoW
+{
+    public interface IUnitOfWork : IDisposable
+    {
+
+        //bulk insert
+        void BulkInsert(string connectionString, string destinationTableName, DataTable dataTable, List<string> dataTableProperties);
+
+        //stored procedure
+        Task<int> ExecuteStoredProcedureAsync(string storedProcedureName);
+        Task<int> ExecuteStoredProcedureAsync(string storedProcedureName, SqlParameter[] parameters);
+
+
+        //Users
+        IUserRepository UserRepository { get; }
+        IRepository<Role> RoleRepository { get; }
+        IRepository<UserRole> UserRoleRepository { get; }
+        IRepository<UserWebClientConnection> UserWebClientConnectionRepository { get; }
+        IRepository<BrowsingHistory> BrowsingHistoryRepository { get; }
+
+
+        //Web API
+        IRepository<Client> ClientRepository { get; }
+        IRepository<RefreshToken> RefreshTokenRepository { get; }
+        IRepository<ClientUsers> ClientUsersRepository { get; }
+
+
+        //Logging
+        IRepository<ErrorLog> ErrorLogRepository { get; }
+
+
+        int SaveChanges();
+        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    }
+}
